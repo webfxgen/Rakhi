@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>यादों की राखी — 90s Sibling Lo-Fi Memory</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Rozha+One&family=Noto+Serif+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* Adjust layout spacing to avoid overlaps with the bottom player */
+        #hero-landing {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 6vh;
+            text-align: center;
+            position: relative;
+        }
+
+        .spotify-wrapper {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        .spotify-container {
+            background: rgba(26, 14, 12, 0.7);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 12px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .interactive-gift-box:hover {
+            transform: scale(1.15) rotate(4deg) !important;
+        }
+        .interactive-gift-box:hover .gift-hint {
+            opacity: 1 !important;
+        }
+
+        @media (max-height: 680px) {
+            #hero-landing {
+                padding-top: 2vh;
+            }
+            .hero-text-card {
+                padding: 20px 24px !important;
+            }
+            .spotify-wrapper {
+                bottom: 15px;
+            }
+            iframe {
+                height: 80px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Cursor Trail -->
+    <div class="cursor-trail" id="cursor-trail"></div>
+
+    <!-- ONE-TIME SESSION LOADER -->
+    <div id="loader">
+        <div class="diya-container">
+            <svg viewBox="0 0 100 100" width="100" height="100">
+                <defs>
+                    <radialGradient id="loader-diya-glow" cx="50%" cy="40%" r="50%">
+                        <stop offset="0%" stop-color="#FFD700" stop-opacity="1" />
+                        <stop offset="50%" stop-color="#FF4500" stop-opacity="0.8" />
+                        <stop offset="100%" stop-color="#4A0E17" stop-opacity="0" />
+                    </radialGradient>
+                    <linearGradient id="loader-flame-grad" x1="0" y1="1" x2="0" y2="0">
+                        <stop offset="0%" stop-color="#FF3300" />
+                        <stop offset="40%" stop-color="#FFA500" />
+                        <stop offset="80%" stop-color="#FFFF33" />
+                        <stop offset="100%" stop-color="#FFFFFF" />
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="40" r="35" fill="url(#loader-diya-glow)" />
+                <path d="M20,60 C20,80 80,80 80,60 C80,50 65,55 50,55 C35,55 20,50 20,60 Z" fill="#8B4513" stroke="#D4AF37" stroke-width="2" />
+                <path d="M50,55 C60,55 70,52 80,48 L80,52 C70,56 60,58 50,58 C40,58 30,56 20,52 L20,48 C30,52 40,55 50,55 Z" fill="#5C2D16" />
+                <path d="M50,55 C45,45 42,30 50,12 C58,30 55,45 50,55 Z" fill="url(#loader-flame-grad)" class="diya-flame-anim" />
+            </svg>
+        </div>
+        <div class="loading-text devanagari" style="font-size: 1.2rem; color: var(--gold-light); margin-bottom: 10px;">पुरानी यादों की किताब खुल रही है...</div>
+        <div class="loading-text" style="font-size: 0.9rem; opacity: 0.8; font-family: var(--font-sans);">Loading our memory... ❤️</div>
+        <div class="progress-bar-container" style="width: 250px; height: 4px; background: rgba(212,175,55,0.2); border-radius: 2px; overflow: hidden; margin-top: 15px;">
+            <div class="progress-bar" id="progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--saffron), var(--gold)); box-shadow: 0 0 8px var(--saffron-bright);"></div>
+        </div>
+    </div>
+
+    <!-- CANVAS NOISE FILTERS -->
+    <canvas id="vintage-noise-canvas"></canvas>
+
+    <!-- VHS CAMERA OVERLAY -->
+    <div class="vhs-overlay" id="vhs-effects">
+        <div class="vhs-scanlines"></div>
+        <div class="vhs-vignette"></div>
+        <div class="vhs-noise-line"></div>
+        <div class="vhs-rec-indicator">
+            <span style="font-size:1.8rem; line-height:1;">●</span> REC
+        </div>
+        <div class="vhs-clock" id="vhs-clock">AUG 11 1998<br>18:30:15</div>
+    </div>
+
+    <!-- PAGE TRANSITION OVERLAY -->
+    <div class="page-transition-cover" id="page-transition-cover">
+        <div class="transition-glow"></div>
+    </div>
+
+    <!-- MAIN HOME LANDING Experience -->
+    <main>
+        
+        <!-- Canvas Background Container for preloaded sequence -->
+        <div class="animation-container" style="position: absolute; top:0; left:0; width:100%; height:100%; z-index:-1; overflow:hidden;">
+            <!-- Subtle marigold garlands framing the canvas background -->
+            <svg viewBox="0 0 1200 120" width="100%" height="120" style="position: absolute; top:0; left:0; z-index: 10; pointer-events: none;" class="garland-sway">
+                <path d="M0,20 Q300,60 600,20 Q900,60 1200,20" fill="none" stroke="#2d5c2d" stroke-width="2" />
+                <circle cx="150" cy="38" r="8" fill="#FFA500" />
+                <circle cx="300" cy="40" r="8" fill="#FFD700" />
+                <circle cx="450" cy="38" r="8" fill="#FFA500" />
+                <circle cx="600" cy="20" r="8" fill="#FFD700" />
+                <circle cx="750" cy="38" r="8" fill="#FFA500" />
+                <circle cx="900" cy="40" r="8" fill="#FFD700" />
+                <circle cx="1050" cy="38" r="8" fill="#FFA500" />
+            </svg>
+            <canvas id="animation-canvas" style="width:100%; height:100%; display:block;"></canvas>
+        </div>
+
+        <section id="hero-landing">
+            
+            <!-- Interactive Gift Box Overlay -->
+            <div class="interactive-gift-box" onclick="openGift()" style="position: fixed; right: 7%; bottom: 24px; width: 70px; height: 70px; z-index: 90; cursor: pointer; transition: transform 0.3s ease; pointer-events: auto;">
+                <svg viewBox="0 0 100 100" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="box-grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#A24936" />
+                            <stop offset="100%" stop-color="#4A0E17" />
+                        </linearGradient>
+                        <linearGradient id="ribbon-grad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#FFD700" />
+                            <stop offset="100%" stop-color="#D4AF37" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Box Body -->
+                    <rect x="15" y="35" width="70" height="50" fill="url(#box-grad)" stroke="#3c1e17" stroke-width="2" rx="4" />
+                    <!-- Lid -->
+                    <rect x="10" y="25" width="80" height="15" fill="#bd5742" stroke="#3c1e17" stroke-width="2" rx="3" />
+                    <!-- Vertical Ribbon -->
+                    <rect x="45" y="25" width="10" height="60" fill="url(#ribbon-grad)" />
+                    <!-- Horizontal Ribbon -->
+                    <rect x="15" y="50" width="70" height="10" fill="url(#ribbon-grad)" />
+                    <!-- Ribbon Bow on Top -->
+                    <path d="M50,25 C40,10 45,5 50,25 Z" fill="url(#ribbon-grad)" stroke="#9E7831" stroke-width="1" />
+                    <path d="M50,25 C60,10 55,5 50,25 Z" fill="url(#ribbon-grad)" stroke="#9E7831" stroke-width="1" />
+                    <circle cx="50" cy="25" r="6" fill="#FFD700" stroke="#9E7831" stroke-width="1.5" />
+                </svg>
+                <div class="gift-hint" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--dark-brown); padding: 4px 10px; border-radius: 12px; font-family: var(--font-sans); font-size: 0.75rem; font-weight: bold; white-space: nowrap; opacity: 0; transition: opacity 0.3s ease; box-shadow: 0 4px 8px rgba(0,0,0,0.3); pointer-events: none;">उपहार खोलें 🎁</div>
+            </div>
+            
+            <!-- Bottom Center Spotify Player Cropped for Controls Only -->
+            <div class="spotify-wrapper">
+                <div style="font-size: 0.9rem; color: var(--gold-light); font-family: var(--font-devanagari); margin-bottom: 8px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    हमारी बचपन वाली Playlist 🎵
+                </div>
+                <!-- Cropping Container -->
+                <div style="width: 100%; height: 48px; overflow: hidden; position: relative; border-radius: 8px; border: 2px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <iframe data-testid="embed-iframe" 
+                            style="position: absolute; top: -104px; left: 0; width: 100%; height: 152px; border: none;" 
+                            src="https://open.spotify.com/embed/playlist/7DILEiQF93PlU7eKMI2FIt?utm_source=generator&theme=0&si=e6a24e636d824786" 
+                            allowfullscreen="" 
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            
+        </section>
+
+    </main>
+
+    <!-- GIFT DETAIL MODAL -->
+    <div class="modal-overlay" id="gift-modal" onclick="closeGiftModal(event)" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 20px;">
+        <div class="modal-card" style="background: radial-gradient(circle at center, #2e1719 0%, #170709 100%); border: 2px solid var(--gold); border-radius: 16px; padding: 30px; max-width: 500px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px;">
+            <button class="modal-close" onclick="closeGiftModal(event)" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: none; color: var(--cream); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+            <div style="font-size: 4rem; margin-top: 10px;">🎁</div>
+            <h3 class="modal-title devanagari" style="color: var(--gold-light); font-size: 1.8rem; margin: 0;">भैया का प्यार भरा संदेश ❤️</h3>
+            <p class="modal-text" style="font-size: 1.15rem; line-height: 1.6; color: var(--cream); margin: 0; font-family: var(--font-serif);">
+                याद है जब भैया पैसे बचाने के लिए ₹10 का नोट छुपाते थे, और फिर राखी पर एक बड़ी सी मुस्कान के साथ तुम्हें देते थे। वो उपहार छोटा था, पर उसमें छुपा प्यार सबसे बड़ा था।
+            </p>
+            <div class="handwritten text-gold" style="font-size: 1.6rem; margin-top: 5px;">"राखी की मिठास हमेशा बनी रहे।"</div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/frame-player.js"></script>
+    <script>
+        // Check session storage for loader bypass
+        const firstTimeSession = sessionStorage.getItem('loader-viewed');
+        if (firstTimeSession) {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        // Initialize frame player engine mapping the 35 png frames
+        const player = new FramePlayer('animation-canvas', 'Boy_and_girl_stationary_animation_202608112010_frames', ANIMATION_FRAMES_LIST, {
+            fps: 12,
+            batchCount: 5,
+            onProgress: (pct) => {
+                const fill = document.getElementById('progress-fill');
+                if (fill) fill.style.width = pct + '%';
+            },
+            onBatchLoad: () => {
+                sessionStorage.setItem('loader-viewed', 'true');
+                gsap.to('#loader', {
+                    opacity: 0,
+                    duration: 0.6,
+                    onComplete: () => {
+                        document.getElementById('loader').style.display = 'none';
+                    }
+                });
+                player.start();
+            }
+        });
+        player.init();
+
+        // Custom gift box modal triggers
+        const giftModal = document.getElementById('gift-modal');
+        function openGift() {
+            if (typeof playChime === 'function') playChime();
+            giftModal.style.opacity = '1';
+            giftModal.style.pointerEvents = 'all';
+            
+            // GSAP zoom-in for modal card
+            gsap.from('#gift-modal .modal-card', {
+                scale: 0.8,
+                duration: 0.5,
+                ease: 'back.out(1.7)'
+            });
+        }
+
+        function closeGiftModal(e) {
+            if (e.target === giftModal || e.target.classList.contains('modal-close') || e.target.closest('.modal-close')) {
+                giftModal.style.opacity = '0';
+                giftModal.style.pointerEvents = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
