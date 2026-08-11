@@ -1,0 +1,296 @@
+:root {
+    --maroon: #4A0E17;
+    --maroon-light: #6E1C28;
+    --saffron: #E26D5C;
+    --saffron-bright: #F4A261;
+    --gold: #D4AF37;
+    --gold-light: #E9D284;
+    --terracotta: #A24936;
+    --cream: #FAF6EE;
+    --dark-brown: #2C1A14;
+    --dark-bg: #120908;
+    --glass-bg: rgba(74, 14, 23, 0.4);
+    --glass-border: rgba(212, 175, 55, 0.3);
+    --transition-speed: 0.4s;
+    --font-serif: 'Cormorant Garamond', 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    --font-devanagari: 'Rozha One', 'Noto Serif Devanagari', serif;
+    --font-handwritten: 'Caveat', cursive;
+}
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--cream);
+    font-family: var(--font-serif);
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, .festive-font {
+    font-family: var(--font-devanagari);
+    font-weight: 400;
+}
+
+.devanagari {
+    font-family: var(--font-devanagari);
+}
+
+.handwritten {
+    font-family: var(--font-handwritten);
+}
+
+.text-gold {
+    color: var(--gold-light);
+}
+
+/* Main Container */
+main {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    padding-top: 0;
+}
+
+/* Custom Interactive Cursor (Desktop) */
+.cursor-trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .cursor-trail {
+        display: block;
+    }
+    a, button, [role="button"], .interactive-element {
+        cursor: none !important;
+    }
+}
+
+/* GLOBAL GLASS NAVIGATION */
+.global-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 950px;
+    background: rgba(44, 26, 20, 0.7);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 10px 24px;
+    backdrop-filter: blur(15px);
+    z-index: 9000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.nav-brand {
+    font-family: var(--font-devanagari);
+    font-size: 1.3rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--cream);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all var(--transition-speed) ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--gold);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Controls Buttons */
+.btn-control {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--gold-light);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-control:hover {
+    background: var(--maroon);
+    border-color: var(--gold);
+    transform: scale(1.05);
+}
+
+.btn-control.active {
+    background: var(--gold);
+    color: var(--dark-brown);
+    border-color: var(--cream);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--gold-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* 90s CRT/VHS EFFECTS LAYER */
+#vintage-noise-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9500;
+    opacity: 0.08;
+}
+
+.vhs-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9501;
+    display: none;
+}
+
+.vhs-overlay.active {
+    display: block;
+}
+
+.vhs-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+}
+
+.vhs-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.65) 100%);
+    box-shadow: inset 0 0 80px rgba(0,0,0,0.8);
+}
+
+.vhs-rec-indicator {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: #FF3300;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: blink-vhs 1s steps(2, start) infinite;
+}
+
+.vhs-clock {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 2px;
+}
+
+@keyframes blink-vhs {
+    to { visibility: hidden; }
+}
+
+/* Global Retro Filters */
+.retro-vhs-mode-filter {
+    filter: sepia(0.2) contrast(0.95) saturate(0.75) brightness(1.03) hue-rotate(-3deg);
+}
+
+/* GOLDEN PAGE SWEEP TRANSITION COVER */
+.page-transition-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--dark-bg);
+    z-index: 99999;
+    transform: translateY(100%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transition-glow {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    top: -50px;
+    background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.6), transparent);
+    filter: blur(10px);
+}

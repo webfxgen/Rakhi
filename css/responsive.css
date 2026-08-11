@@ -1,0 +1,80 @@
+/* Responsive rules for Tablet & Mobile */
+
+@media (max-width: 991px) {
+    .global-nav {
+        padding: 8px 16px;
+    }
+
+    .nav-links {
+        display: none; /* Handled by JS mobile drawer or toggle */
+        position: absolute;
+        top: 75px;
+        left: 5%;
+        width: 90%;
+        background: rgba(28, 14, 11, 0.95);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .cursor-trail {
+        display: none !important; /* Disable custom cursor on touch devices */
+    }
+
+    body {
+        cursor: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    main {
+        padding-top: 70px;
+    }
+
+    .global-nav {
+        border-radius: 25px;
+    }
+
+    h1, .hero-devanagari {
+        font-size: clamp(2rem, 5vw, 3rem) !important;
+    }
+
+    h2 {
+        font-size: clamp(1.6rem, 4vw, 2.2rem) !important;
+    }
+
+    .btn-control span {
+        display: none; /* Icons only on mobile controls */
+    }
+
+    .btn-control::before {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .floating-controls {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        flex-direction: row;
+    }
+
+    .btn-round {
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+    }
+}

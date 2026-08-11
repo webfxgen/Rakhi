@@ -1,0 +1,141 @@
+/* Diya Flame Flicker */
+@keyframes flame-flutter {
+    0%, 100% {
+        transform: scaleX(1) scaleY(1);
+    }
+    25% {
+        transform: scaleX(0.9) scaleY(1.05) skewX(-2deg);
+    }
+    50% {
+        transform: scaleX(1.05) scaleY(0.95) skewX(2deg);
+    }
+    75% {
+        transform: scaleX(0.95) scaleY(1.02) skewX(-1deg);
+    }
+}
+
+.diya-flame-anim {
+    transform-origin: bottom center;
+    animation: flame-flutter 1.5s ease-in-out infinite;
+}
+
+/* Incense Smoke drifting */
+@keyframes smoke-drift {
+    0% {
+        transform: translateY(0) scaleX(1);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(-80px) scaleX(1.4) translateX(15px);
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateY(-180px) scaleX(2) translateX(-30px);
+        opacity: 0;
+    }
+}
+
+.incense-smoke {
+    animation: smoke-drift 5s ease-out infinite;
+}
+
+/* Garland Swaying in breeze */
+@keyframes garland-swing {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(1.5deg);
+    }
+}
+
+.garland-sway {
+    transform-origin: top center;
+    animation: garland-swing 4s ease-in-out infinite;
+}
+
+/* Diya Light Pulse Glow */
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.08);
+    }
+}
+
+.diya-glow-pulse {
+    transform-origin: center;
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Cassette Tape Rotation */
+@keyframes rotate-reel {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reel-rotation {
+    transform-origin: center;
+    animation: rotate-reel 4s linear infinite;
+}
+
+.reel-rotation.paused {
+    animation-play-state: paused;
+}
+
+/* Polaroid Card hover rise */
+@keyframes float-polaroid {
+    0%, 100% {
+        transform: translateY(0) rotate(var(--rot));
+    }
+    50% {
+        transform: translateY(-6px) rotate(calc(var(--rot) + 1deg));
+    }
+}
+
+.polaroid-float-effect {
+    animation: float-polaroid 6s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+/* Film static line glitch simulation */
+@keyframes vhs-glitch-line {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+.vhs-noise-line {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    top: 0;
+    z-index: 10;
+    pointer-events: none;
+    animation: vhs-glitch-line 6s linear infinite;
+}
+
+/* Soft ambient lighting flicker */
+@keyframes lamp-flicker {
+    0%, 100% { opacity: 0.95; }
+    45% { opacity: 0.93; }
+    50% { opacity: 0.88; }
+    52% { opacity: 0.96; }
+    85% { opacity: 0.94; }
+    90% { opacity: 0.9; }
+}
+
+.lamp-flicker-anim {
+    animation: lamp-flicker 5s infinite;
+}
